@@ -33,12 +33,7 @@ async function start() {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    // Step 3: Setup security modules
-    logger.info('🛡️  Setting up security modules...');
-    setupSecurityModules(app);
-    logger.info('✅ Security modules initialized');
-
-    // Step 4: Health check endpoint (public)
+    // Step 3: Health check endpoint FIRST (before any auth)
     app.get('/health', (req, res) => {
       res.status(200).json({
         status: 'ok',
@@ -46,6 +41,11 @@ async function start() {
         timestamp: new Date().toISOString(),
       });
     });
+
+    // Step 4: Setup security modules
+    logger.info('🛡️  Setting up security modules...');
+    setupSecurityModules(app);
+    logger.info('✅ Security modules initialized');
 
     // Step 5: Proxy all other traffic to OpenClaw gateway
     app.use(
