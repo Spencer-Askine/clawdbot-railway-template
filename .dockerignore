@@ -1,0 +1,103 @@
+# Git and version control
+.git
+.gitignore
+.gitattributes
+.github
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+
+# Credentials and keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+id_rsa
+id_ed25519
+ssh_config
+
+# IDE and editor
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+.editorconfig
+
+# Node/npm
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npmrc
+.yarnrc
+package-lock.json
+yarn.lock
+
+# Build artifacts
+dist
+build
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Testing
+coverage
+.nyc_output
+.mocharc*
+jest.config.js
+*.test.js
+*.spec.js
+__tests__
+test
+
+# Documentation
+docs
+README*
+CONTRIBUTING*
+LICENSE
+CHANGELOG*
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+azure-pipelines.yml
+
+# Development
+dev
+playground
+examples
+scripts/dev*
+
+# Temporary and cache
+*.tmp
+*.temp
+.cache
+.venv
+__pycache__
+
+# Logs and monitoring
+logs
+*.log
+.pm2
+
+# Security scanning
+.snyk
+.trivy.yaml
+
+# Docker
+Dockerfile.dev
+docker-compose.dev.yml
+docker-compose.test.yml
+
+# Misc
+.DS_Store
+.env.example
+todo.txt
+notes.md

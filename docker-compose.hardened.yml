@@ -1,0 +1,94 @@
+version: '3.9'
+
+services:
+  openclaw:
+    build:
+      context: .
+      dockerfile: Dockerfile.hardened
+    container_name: openclaw-secure
+    
+    # Security: Don't give extra privileges
+    security_opt:
+      - no-new-privileges:true
+    
+    # Security: Drop unnecessary Linux capabilities
+    cap_drop:
+      - ALL
+    
+    # Security: Read-only root filesystem
+    read_only: true
+    
+    # Temporary filesystems for logging and temp files
+    tmpfs:
+      - /tmp
+      - /var/tmp
+      - /data/logs
+    
+    # Resource limits (prevent resource exhaustion)
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    
+    # Environment variables (no secrets in compose!)
+    env_file:
+      - .env.production  # Created separately, not committed
+    
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+    
+    # Port binding (loopback only for maximum security)
+    ports:
+      - "127.0.0.1:3000:3000"  # Local only
+    
+    # Volumes (minimal, read-only where possible)
+    volumes:
+      # Persistent data
+      - openclaw_data:/data:rw
+      # Workspace
+      - ./workspace:/app/workspace:rw
+      # Logs
+      - openclaw_logs:/data/logs:rw
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Networking
+    networks:
+      - openclaw-network
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=openclaw"
+
+networks:
+  openclaw-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: "br-openclaw"
+
+volumes:
+  openclaw_data:
+    driver: local
+  openclaw_logs:
+    driver: local
+
+# Usage:
+# docker-compose -f docker-compose.hardened.yml up -d
